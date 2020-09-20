@@ -25,3 +25,5 @@ npm start
 ```
 
 Esto abrira un servidor local con un puerto que constantemente estara escuchando tus cambios con un socket preconfigurado por el mismo entorno de desarrollo. Puedes cambiar el puerto si lo deseas en los scripts del package
+
+Próximamente agregare los paquetes que he utilizado en este proyecto template de webpack
