@@ -1,68 +1,82 @@
-const babelPlugin            = require('babel-minify-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const copyPlugin             = require('copy-webpack-plugin');
-const htmlPlugin             = require('html-webpack-plugin');
-const miniCssPlugin          = require('mini-css-extract-plugin');
-const optimizeAssetsPlugin   = require('optimize-css-assets-webpack-plugin');
+const HtmlWebpack    = require('html-webpack-plugin')
+const MiniCssExtract = require('mini-css-extract-plugin');
+const CopyPlugin     = require("copy-webpack-plugin");
+
+
+const CssMinimizer = require('css-minimizer-webpack-plugin');
+const Terser       = require('terser-webpack-plugin');
 
 module.exports = {
-    mode: 'production',
-    optimization: {
-        minimizer: [new optimizeAssetsPlugin()]
-    },
+    
+    mode: "production",
+
     output: {
-        filename: '[name].[contenthash].js'
+        clean: true,
+        filename: 'main.[contenthash].js'
     },
+    
+
     module: {
         rules: [
             {
                 test: /\.html$/,
                 loader: 'html-loader',
                 options: {
-                    attributes: false,
-                    minimize: true
+                    sources: false
                 }
             },
             {
                 test: /\.css$/,
-                exclude: /style\.css$/,
-                use: [
-                    'style-loader',
-                    'css-loader'
-                ]
+                exclude: /styles.css$/,
+                use: [ 'style-loader', 'css-loader']
             },
             {
-                test: /style\.css$/,
-                use: [
-                    miniCssPlugin.loader,
-                    'css-loader'
-                ]
+                test: /styles.css$/,
+                use: [ MiniCssExtract.loader, 'css-loader' ]
             },
             {
-                test: /\.js$/,
+                test: /\.(png|jpe?g|gif)$/,
+                loader: 'file-loader'
+            },
+            {
+                test: /\.m?js$/,
                 exclude: /node_modules/,
-                loader: 'babel-loader'
+                use: {
+                  loader: "babel-loader",
+                  options: {
+                    presets: ['@babel/preset-env']
+                  }
+                }
             }
         ]
     },
+
+    optimization: {
+        minimize: true,
+        minimizer: [
+            new CssMinimizer(),
+            new Terser(),
+        ]
+    },
+
     plugins: [
-        new babelPlugin(),
-        new CleanWebpackPlugin(),
-        new copyPlugin({
-            patterns: [
-                {
-                    from: 'src/assets/',
-                    to: 'assets/'
-                }
-            ]
+        new HtmlWebpack({
+            title: 'Mi Webpack App',
+            // filename: 'index.html',
+            template: './src/index.html'
         }),
-        new htmlPlugin({
-            template: './src/index.html',
-            filename: './index.html'
-        }),
-        new miniCssPlugin({
-            filename: '[name].[contenthash].css',
+        
+        new MiniCssExtract({
+            filename: '[name].[fullhash].css',
             ignoreOrder: false
+        }),
+
+        new CopyPlugin({
+            patterns: [
+                { from: 'src/assets/', to: 'assets/' }
+            ]
         })
     ]
 }
+
+

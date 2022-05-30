@@ -1,2 +1,6 @@
-//Importamos los estilos globales
-import '../src/style.css';
+import saludar from './js/componentes';
+import './styles.css';
+
+const nombre = 'EikichiDevEdd';
+
+saludar( nombre );

@@ -1,0 +1,15 @@
+html,
+body {
+    margin: 0;
+    background-color: #ddd;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.container {
+    width: 100%;
+    text-align: center;
+}
+
+.mt-5 {
+    margin-top: 5rem;
+}
